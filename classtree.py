@@ -48,7 +48,7 @@ def mrotree(cls, matchfunc=None):
     return result
 
 
-def print_tree(treedict, begin_characters='', use_unicode=False):
+def print_tree(treedict, begin_characters='', ascii_only=False):
     """Print a tree stored in a dictionary."""
     items = sorted(treedict.items())
 
@@ -58,22 +58,22 @@ def print_tree(treedict, begin_characters='', use_unicode=False):
 
         if index == len(items)-1:
             # This is the last item.
-            if use_unicode:
-                print_template = '└── %s'
-            else:
+            if ascii_only:
                 print_template = '`-- %s'
+            else:
+                print_template = '└── %s'
             new_begin_characters = begin_characters + ' '
         else:
             # This is not the last item.
-            if use_unicode:
-                print_template = '├── %s'
-                new_begin_characters = begin_characters + '│'
-            else:
+            if ascii_only:
                 print_template = '|-- %s'
                 new_begin_characters = begin_characters + '|'
+            else:
+                print_template = '├── %s'
+                new_begin_characters = begin_characters + '│'
 
         print(print_template % name)
-        print_tree(value, new_begin_characters, use_unicode)
+        print_tree(value, new_begin_characters, ascii_only)
 
 
 # Simple command-line interface.
@@ -89,7 +89,7 @@ def is_from_module(cls, module):
 
 
 def main():
-    usage = "Usage: %s MODULE CLASS [-u|--unicode]" % sys.argv[0]
+    usage = "Usage: %s MODULE CLASS [-a|--ascii]" % sys.argv[0]
 
     if len(sys.argv) < 3:
         # Missing arguments.
@@ -98,10 +98,10 @@ def main():
     modulename = sys.argv[1]
     classname = sys.argv[2]
 
-    use_unicode = False
+    ascii_only = False
     for option in sys.argv[3:]:
-        if option in {'-u', '--unicode'}:
-            use_unicode = True
+        if option in {'-a', '--ascii'}:
+            ascii_only = True
         else:
             error(usage)
 
@@ -111,7 +111,7 @@ def main():
 
     tree = mrotree(cls, matchfunc=is_from_the_module)
     print(classname)
-    print_tree(tree, use_unicode=use_unicode)
+    print_tree(tree, ascii_only=ascii_only)
 
 
 if __name__ == '__main__':

@@ -5,7 +5,7 @@ Python module.
 
 Example:
 
-    $ python3.4 classtree.py builtins OSError --unicode
+    $ python3.4 classtree.py builtins OSError
     OSError
     ├── BlockingIOError
     ├── ChildProcessError
